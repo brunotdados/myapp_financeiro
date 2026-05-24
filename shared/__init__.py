@@ -1,0 +1,2 @@
+"""Pacote de codigo compartilhado."""
+

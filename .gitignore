@@ -1,0 +1,12 @@
+.env
+frontend/.env
+.venv/
+__pycache__/
+*.py[cod]
+
+data/raw/*
+data/processed/*
+data/exports/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/exports/.gitkeep
