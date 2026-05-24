@@ -10,6 +10,7 @@ from services.finance_data import (
     save_nubank_data,
     update_categorized_rows,
 )
+from services.nubank_email_importer import import_latest_nubank_statements
 
 
 def render() -> None:
@@ -28,6 +29,8 @@ def render() -> None:
         unsafe_allow_html=True,
     )
 
+    render_email_import()
+
     if df.empty:
         st.warning("Nenhum arquivo consolidado do Nubank foi encontrado.")
         return
@@ -37,6 +40,39 @@ def render() -> None:
     render_kpis(month_df=month_df, target_numanomes=target_numanomes)
     render_category_registration()
     render_month_table(full_df=df, month_df=month_df, target_numanomes=target_numanomes)
+
+
+def render_email_import() -> None:
+    st.markdown(
+        """
+        <div class="section-card">
+            <h2>Atualizar extrato Nubank</h2>
+            <p>Busca o email mais recente de cada Gmail configurado, consolida os CSVs e atualiza a base no Supabase.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    col1, col2 = st.columns([0.45, 0.55])
+    with col1:
+        if st.button("Buscar email mais recente", type="primary", use_container_width=True):
+            try:
+                with st.spinner("Buscando emails do Nubank..."):
+                    result = import_latest_nubank_statements()
+                accounts = ", ".join(result.accounts)
+                st.success(
+                    f"Extrato atualizado: {result.rows} lancamentos importados "
+                    f"para {accounts}."
+                )
+                st.caption("Arquivos: " + ", ".join(result.attachments))
+                st.rerun()
+            except Exception as exc:
+                st.error(str(exc))
+
+    with col2:
+        st.caption(
+            "No Streamlit Cloud, configure os secrets dos dois Gmails com senha de app."
+        )
 
 
 def render_kpis(month_df: pd.DataFrame, target_numanomes: str) -> None:

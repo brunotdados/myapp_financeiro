@@ -55,6 +55,20 @@ SUPABASE_URL
 SUPABASE_KEY
 ```
 
+Para o botao "Buscar email mais recente" do Nubank funcionar no Streamlit Cloud,
+adicione tambem:
+
+```text
+BRUNO_EMAIL
+BRUNO_EMAIL_APP_PASSWORD
+MAYARA_EMAIL
+MAYARA_EMAIL_APP_PASSWORD
+NUBANK_STATEMENT_SUBJECT="Extrato da fatura do Cartão Nubank"
+```
+
+As senhas dos Gmails precisam ser senhas de app do Google, nao a senha normal da
+conta.
+
 Antes do deploy, crie as tabelas no Supabase usando:
 
 ```text
