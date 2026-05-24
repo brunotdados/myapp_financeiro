@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from services.storage import load_table, save_table
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 NUBANK_EXPORT_PATH = PROJECT_ROOT / "data" / "exports" / "ControleFinanceiro.csv"
@@ -17,6 +19,16 @@ MANUAL_BANK_ACCOUNTS_PATH = (
 TITHE_PATH = PROJECT_ROOT / "data" / "processed" / "dizimo_mensal.csv"
 
 CATEGORY_COLUMNS = ["categoria", "subcategoria"]
+NUBANK_COLUMNS = [
+    "data_compra",
+    "descricao",
+    "valor",
+    "origem",
+    "NUMANOMES",
+    "banco",
+    "categoria",
+    "subcategoria",
+]
 HOUSE_BILLS_COLUMNS = ["id", "NUMANOMES", "descricao", "valor", "status"]
 HOUSE_BILL_STATUS = ["Pendente", "Pago"]
 INCOME_COLUMNS = ["id", "NUMANOMES", "descricao", "valor", "status"]
@@ -75,10 +87,14 @@ def format_currency(value: float) -> str:
 
 
 def load_nubank_data() -> pd.DataFrame:
-    if not NUBANK_EXPORT_PATH.exists():
-        return pd.DataFrame()
+    df = load_table(
+        table_name="nubank_lancamentos",
+        columns=NUBANK_COLUMNS,
+        csv_path=NUBANK_EXPORT_PATH,
+    )
+    if df.empty:
+        return df
 
-    df = pd.read_csv(NUBANK_EXPORT_PATH)
     df["NUMANOMES"] = df["NUMANOMES"].astype(str)
 
     needs_save = False
@@ -95,14 +111,22 @@ def load_nubank_data() -> pd.DataFrame:
 
 
 def save_nubank_data(df: pd.DataFrame) -> None:
-    NUBANK_EXPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(NUBANK_EXPORT_PATH, index=False, decimal=".", sep=",")
+    save_table(
+        table_name="nubank_lancamentos",
+        df=df,
+        columns=NUBANK_COLUMNS,
+        csv_path=NUBANK_EXPORT_PATH,
+        delete_column="origem",
+    )
 
 
 def load_category_catalog() -> pd.DataFrame:
-    if CATEGORY_CATALOG_PATH.exists():
-        catalog = pd.read_csv(CATEGORY_CATALOG_PATH)
-    else:
+    catalog = load_table(
+        table_name="categorias_nubank",
+        columns=CATEGORY_COLUMNS,
+        csv_path=CATEGORY_CATALOG_PATH,
+    )
+    if catalog.empty:
         catalog = DEFAULT_CATALOG.copy()
         save_category_catalog(catalog)
 
@@ -120,10 +144,12 @@ def load_category_catalog() -> pd.DataFrame:
 
 
 def save_category_catalog(catalog: pd.DataFrame) -> None:
-    CATEGORY_CATALOG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    catalog[CATEGORY_COLUMNS].drop_duplicates().to_csv(
-        CATEGORY_CATALOG_PATH,
-        index=False,
+    save_table(
+        table_name="categorias_nubank",
+        df=catalog[CATEGORY_COLUMNS].drop_duplicates(),
+        columns=CATEGORY_COLUMNS,
+        csv_path=CATEGORY_CATALOG_PATH,
+        delete_column="categoria",
     )
 
 
@@ -156,9 +182,12 @@ def update_categorized_rows(
 
 
 def load_house_bills() -> pd.DataFrame:
-    if HOUSE_BILLS_PATH.exists():
-        df = pd.read_csv(HOUSE_BILLS_PATH)
-    else:
+    df = load_table(
+        table_name="contas_casa",
+        columns=HOUSE_BILLS_COLUMNS,
+        csv_path=HOUSE_BILLS_PATH,
+    )
+    if df.empty:
         df = pd.DataFrame(columns=HOUSE_BILLS_COLUMNS)
         save_house_bills(df)
 
@@ -180,8 +209,12 @@ def load_house_bills() -> pd.DataFrame:
 
 
 def save_house_bills(df: pd.DataFrame) -> None:
-    HOUSE_BILLS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    df[HOUSE_BILLS_COLUMNS].to_csv(HOUSE_BILLS_PATH, index=False)
+    save_table(
+        table_name="contas_casa",
+        df=df,
+        columns=HOUSE_BILLS_COLUMNS,
+        csv_path=HOUSE_BILLS_PATH,
+    )
 
 
 def add_house_bill(numanomes: str, description: str, value: float, status: str) -> None:
@@ -225,9 +258,12 @@ def update_house_bills(edited_df: pd.DataFrame) -> None:
 
 
 def load_income_entries() -> pd.DataFrame:
-    if INCOME_ENTRIES_PATH.exists():
-        df = pd.read_csv(INCOME_ENTRIES_PATH)
-    else:
+    df = load_table(
+        table_name="entradas",
+        columns=INCOME_COLUMNS,
+        csv_path=INCOME_ENTRIES_PATH,
+    )
+    if df.empty:
         df = pd.DataFrame(columns=INCOME_COLUMNS)
         save_income_entries(df)
 
@@ -249,8 +285,12 @@ def load_income_entries() -> pd.DataFrame:
 
 
 def save_income_entries(df: pd.DataFrame) -> None:
-    INCOME_ENTRIES_PATH.parent.mkdir(parents=True, exist_ok=True)
-    df[INCOME_COLUMNS].to_csv(INCOME_ENTRIES_PATH, index=False)
+    save_table(
+        table_name="entradas",
+        df=df,
+        columns=INCOME_COLUMNS,
+        csv_path=INCOME_ENTRIES_PATH,
+    )
 
 
 def add_income_entry(
@@ -299,9 +339,12 @@ def update_income_entries(edited_df: pd.DataFrame) -> None:
 
 
 def load_manual_bank_accounts() -> pd.DataFrame:
-    if MANUAL_BANK_ACCOUNTS_PATH.exists():
-        df = pd.read_csv(MANUAL_BANK_ACCOUNTS_PATH)
-    else:
+    df = load_table(
+        table_name="contas_banco_manuais",
+        columns=MANUAL_BANK_COLUMNS,
+        csv_path=MANUAL_BANK_ACCOUNTS_PATH,
+    )
+    if df.empty:
         df = pd.DataFrame(columns=MANUAL_BANK_COLUMNS)
         save_manual_bank_accounts(df)
 
@@ -326,12 +369,11 @@ def load_manual_bank_accounts() -> pd.DataFrame:
 
 
 def save_manual_bank_accounts(df: pd.DataFrame) -> None:
-    MANUAL_BANK_ACCOUNTS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    df[MANUAL_BANK_COLUMNS].to_csv(
-        MANUAL_BANK_ACCOUNTS_PATH,
-        index=False,
-        decimal=".",
-        sep=",",
+    save_table(
+        table_name="contas_banco_manuais",
+        df=df,
+        columns=MANUAL_BANK_COLUMNS,
+        csv_path=MANUAL_BANK_ACCOUNTS_PATH,
     )
 
 
@@ -396,9 +438,12 @@ def update_manual_bank_accounts(edited_df: pd.DataFrame) -> None:
 def load_monthly_tithe(year: int | None = None) -> pd.DataFrame:
     selected_year = year or date.today().year
 
-    if TITHE_PATH.exists():
-        df = pd.read_csv(TITHE_PATH)
-    else:
+    df = load_table(
+        table_name="dizimo_mensal",
+        columns=TITHE_COLUMNS,
+        csv_path=TITHE_PATH,
+    )
+    if df.empty:
         df = build_default_tithe_table(selected_year)
         save_monthly_tithe(df)
 
@@ -437,9 +482,13 @@ def build_default_tithe_table(year: int) -> pd.DataFrame:
 
 
 def save_monthly_tithe(df: pd.DataFrame) -> None:
-    TITHE_PATH.parent.mkdir(parents=True, exist_ok=True)
     normalized_df = normalize_tithe_table(df)
-    normalized_df[TITHE_COLUMNS].to_csv(TITHE_PATH, index=False)
+    save_table(
+        table_name="dizimo_mensal",
+        df=normalized_df,
+        columns=TITHE_COLUMNS,
+        csv_path=TITHE_PATH,
+    )
 
 
 def normalize_tithe_table(df: pd.DataFrame) -> pd.DataFrame:

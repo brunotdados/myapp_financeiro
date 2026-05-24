@@ -1,9 +1,11 @@
 import os
+from pathlib import Path
 
 import streamlit as st
 from dotenv import load_dotenv
 
 from components.auth import login_form
+from services.storage import get_secret
 from styles.theme import apply_theme
 from views import (
     dashboard,
@@ -26,7 +28,7 @@ NAV_ITEMS = {
 
 
 def main() -> None:
-    load_dotenv()
+    load_dotenv(Path(__file__).resolve().parents[1] / ".env")
     st.set_page_config(
         page_title="Controle Financeiro Pessoal",
         layout="wide",
@@ -42,8 +44,8 @@ def main() -> None:
 
     if not st.session_state.authenticated:
         login_form(
-            expected_user=os.getenv("FINANCE_APP_USER", "admin"),
-            expected_password=os.getenv("FINANCE_APP_PASSWORD", "admin"),
+            expected_user=get_secret("FINANCE_APP_USER") or os.getenv("FINANCE_APP_USER", "admin"),
+            expected_password=get_secret("FINANCE_APP_PASSWORD") or os.getenv("FINANCE_APP_PASSWORD", "admin"),
         )
         return
 

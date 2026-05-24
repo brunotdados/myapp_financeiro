@@ -34,15 +34,31 @@ copy .env.example .env
 ..\..\.venv\Scripts\streamlit run app/main.py
 ```
 
-## Deploy
+## Deploy gratuito
 
-O projeto inclui um `Dockerfile` e um `render.yaml` para deploy do Streamlit em Render.
+Para deploy gratuito com dados persistentes, use Streamlit Community Cloud + Supabase.
 
-Variaveis obrigatorias no painel da plataforma:
+No Streamlit Community Cloud, configure:
+
+```text
+Repository: brunotdados/myapp_financeiro
+Branch: main
+Main file path: frontend/app/main.py
+```
+
+Secrets obrigatorios:
 
 ```text
 FINANCE_APP_USER
 FINANCE_APP_PASSWORD
+SUPABASE_URL
+SUPABASE_KEY
+```
+
+Antes do deploy, crie as tabelas no Supabase usando:
+
+```text
+docs/supabase_schema.sql
 ```
 
 ## Estrutura
