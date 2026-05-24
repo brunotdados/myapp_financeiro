@@ -3,7 +3,7 @@ services:
     name: myapp-financeiro
     env: docker
     plan: starter
-    branch: develop
+    branch: main
     autoDeploy: true
     disk:
       name: myapp-financeiro-data
