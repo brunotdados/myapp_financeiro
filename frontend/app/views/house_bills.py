@@ -71,13 +71,10 @@ def render_registration_form(default_numanomes: str) -> None:
     )
 
     with st.form("house_bill_form", clear_on_submit=True):
-        col1, col2 = st.columns([0.35, 0.65])
-        numanomes = col1.text_input("NUMANOMES", value=default_numanomes)
-        description = col2.text_input("Descricao da conta", placeholder="Ex: Energia")
-
-        col3, col4 = st.columns([0.35, 0.65])
-        value = col3.number_input("Valor", min_value=0.0, step=10.0, format="%.2f")
-        status = col4.selectbox("Status", HOUSE_BILL_STATUS)
+        numanomes = st.text_input("NUMANOMES", value=default_numanomes)
+        description = st.text_input("Descricao da conta", placeholder="Ex: Energia")
+        value = st.number_input("Valor", min_value=0.0, step=10.0, format="%.2f")
+        status = st.selectbox("Status", HOUSE_BILL_STATUS)
 
         submitted = st.form_submit_button("Cadastrar conta", use_container_width=True)
 

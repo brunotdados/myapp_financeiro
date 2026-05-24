@@ -85,18 +85,13 @@ def render_registration_form(default_numanomes: str) -> None:
     )
 
     with st.form("manual_bank_account_form", clear_on_submit=True):
-        col1, col2, col3 = st.columns([0.25, 0.35, 0.4])
-        purchase_date = col1.date_input("Data da compra")
-        numanomes = col2.text_input("NUMANOMES", value=default_numanomes)
-        bank = col3.text_input("Banco/cartao", placeholder="Ex: santander")
-
-        col4, col5 = st.columns([0.65, 0.35])
-        description = col4.text_input("Descricao", placeholder="Ex: Supermercado")
-        value = col5.number_input("Valor", min_value=0.0, step=10.0, format="%.2f")
-
-        col6, col7 = st.columns(2)
-        category = col6.selectbox("Categoria", category_options)
-        subcategory = col7.selectbox("Subcategoria", subcategory_options)
+        purchase_date = st.date_input("Data da compra")
+        numanomes = st.text_input("NUMANOMES", value=default_numanomes)
+        bank = st.text_input("Banco/cartao", placeholder="Ex: santander")
+        description = st.text_input("Descricao", placeholder="Ex: Supermercado")
+        value = st.number_input("Valor", min_value=0.0, step=10.0, format="%.2f")
+        category = st.selectbox("Categoria", category_options)
+        subcategory = st.selectbox("Subcategoria", subcategory_options)
 
         submitted = st.form_submit_button(
             "Cadastrar lancamento",
