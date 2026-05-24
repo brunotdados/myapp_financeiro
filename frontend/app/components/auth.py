@@ -7,9 +7,7 @@ def login_form(expected_user: str, expected_password: str) -> None:
     st.markdown(
         """
         <div class="login-copy">
-            <span>Financas pessoais</span>
-            <h1>Controle Financeiro Pessoal</h1>
-            <p>Organize contas, cartoes e extratos em um painel simples para acompanhar pelo celular.</p>
+            <h1>Financas - Perroni & Toselli</h1>
         </div>
         """,
         unsafe_allow_html=True,

@@ -3,22 +3,23 @@ import streamlit as st
 
 def apply_theme(authenticated: bool) -> None:
     sidebar_visibility = "block" if authenticated else "none"
-    block_width = "1120px" if authenticated else "460px"
-    block_padding = "32px 32px 40px" if authenticated else "11vh 18px 32px"
+    block_width = "1040px" if authenticated else "420px"
+    block_padding = "20px 20px 28px" if authenticated else "9vh 18px 24px"
 
     css = """
         <style>
         :root {
-            --finance-bg: #f7f8fa;
-            --finance-panel: #ffffff;
-            --finance-border: #d9dee8;
-            --finance-text: #1f2937;
-            --finance-muted: #667085;
-            --finance-accent: #2563eb;
-            --finance-accent-dark: #1d4ed8;
-            --finance-green: #15803d;
-            --finance-red: #b42318;
-            --finance-yellow: #b54708;
+            --finance-bg: #000000;
+            --finance-panel: #0b0b0f;
+            --finance-panel-soft: #111118;
+            --finance-border: #2a2a33;
+            --finance-text: #f9fafb;
+            --finance-muted: #a1a1aa;
+            --finance-accent: #ffffff;
+            --finance-accent-dark: #d4d4d8;
+            --finance-green: #22c55e;
+            --finance-red: #ef4444;
+            --finance-yellow: #f59e0b;
         }
 
         .stApp {
@@ -31,7 +32,7 @@ def apply_theme(authenticated: bool) -> None:
         }
 
         [data-testid="stHeader"] {
-            background: transparent;
+            background: #000000;
         }
 
         #MainMenu,
@@ -46,7 +47,7 @@ def apply_theme(authenticated: bool) -> None:
 
         .login-copy {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
         }
 
         .login-copy span,
@@ -61,17 +62,17 @@ def apply_theme(authenticated: bool) -> None:
 
         .login-copy h1 {
             color: var(--finance-text);
-            font-size: 34px;
+            font-size: 38px;
             line-height: 1.12;
-            margin: 8px 0 10px;
+            margin: 0;
             letter-spacing: 0;
         }
 
         .login-copy p,
         .page-heading p {
             color: var(--finance-muted);
-            font-size: 16px;
-            line-height: 1.55;
+            font-size: 14px;
+            line-height: 1.45;
             margin: 0;
         }
 
@@ -80,8 +81,8 @@ def apply_theme(authenticated: bool) -> None:
             border-radius: 6px;
             border-color: var(--finance-accent);
             background: var(--finance-accent);
-            color: white;
-            min-height: 42px;
+            color: #000000;
+            min-height: 38px;
             font-weight: 600;
         }
 
@@ -89,26 +90,57 @@ def apply_theme(authenticated: bool) -> None:
         .stFormSubmitButton > button:hover {
             border-color: var(--finance-accent-dark);
             background: var(--finance-accent-dark);
-            color: white;
+            color: #000000;
         }
 
         .stTextInput input {
             border-radius: 6px;
-            min-height: 42px;
+            min-height: 38px;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            color: #111827;
+        }
+
+        .stTextInput label {
+            color: var(--finance-text);
+            font-weight: 700;
         }
 
         [data-testid="stVerticalBlockBorderWrapper"] {
             border-radius: 8px;
+            background: var(--finance-panel);
+            border: 1px solid var(--finance-border);
+        }
+
+        [data-baseweb="select"] > div,
+        [data-baseweb="input"] > div,
+        [data-baseweb="base-input"],
+        textarea,
+        input {
+            background: #ffffff;
+            color: #111827;
+        }
+
+        [data-testid="stDataFrame"],
+        [data-testid="stDataEditor"] {
+            border: 1px solid var(--finance-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .stAlert {
+            background: var(--finance-panel-soft);
+            color: var(--finance-text);
         }
 
         .sidebar-brand {
-            padding: 10px 4px 22px;
+            padding: 4px 4px 14px;
         }
 
         .sidebar-brand strong {
             display: block;
             color: #f9fafb;
-            font-size: 20px;
+            font-size: 18px;
             letter-spacing: 0;
         }
 
@@ -118,7 +150,8 @@ def apply_theme(authenticated: bool) -> None:
         }
 
         [data-testid="stSidebar"] {
-            background: #0f172a;
+            background: #000000;
+            border-right: 1px solid var(--finance-border);
         }
 
         [data-testid="stSidebar"] label,
@@ -130,13 +163,13 @@ def apply_theme(authenticated: bool) -> None:
         [data-testid="stSidebar"] [role="radiogroup"] {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
 
         [data-testid="stSidebar"] [data-testid="stRadio"] label {
             background: transparent;
             border-radius: 8px;
-            padding: 8px 10px;
+            padding: 6px 8px;
         }
 
         [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
@@ -155,32 +188,32 @@ def apply_theme(authenticated: bool) -> None:
         .topbar {
             display: flex;
             justify-content: flex-end;
-            margin-bottom: 18px;
+            margin-bottom: 10px;
         }
 
         .topbar > div {
             background: var(--finance-panel);
             border: 1px solid var(--finance-border);
             border-radius: 8px;
-            padding: 10px 14px;
+            padding: 8px 12px;
             min-width: 180px;
-            box-shadow: 0 8px 24px rgba(31, 41, 55, 0.06);
+            box-shadow: none;
         }
 
         .topbar strong {
             display: block;
             color: var(--finance-text);
-            font-size: 16px;
+            font-size: 14px;
             margin-top: 2px;
         }
 
         .page-heading {
-            margin-bottom: 24px;
+            margin-bottom: 14px;
         }
 
         .page-heading h1 {
             color: var(--finance-text);
-            font-size: 38px;
+            font-size: 30px;
             letter-spacing: 0;
             line-height: 1.15;
             margin: 6px 0 8px;
@@ -189,8 +222,8 @@ def apply_theme(authenticated: bool) -> None:
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 16px;
-            margin: 16px 0 26px;
+            gap: 10px;
+            margin: 10px 0 16px;
         }
 
         .kpi-card,
@@ -198,11 +231,11 @@ def apply_theme(authenticated: bool) -> None:
             background: var(--finance-panel);
             border: 1px solid var(--finance-border);
             border-radius: 8px;
-            box-shadow: 0 10px 28px rgba(31, 41, 55, 0.07);
+            box-shadow: none;
         }
 
         .kpi-card {
-            padding: 18px;
+            padding: 13px;
             position: relative;
             overflow: hidden;
         }
@@ -220,7 +253,7 @@ def apply_theme(authenticated: bool) -> None:
 
         .kpi-label {
             color: var(--finance-muted);
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 700;
             letter-spacing: 0;
             text-transform: uppercase;
@@ -228,87 +261,195 @@ def apply_theme(authenticated: bool) -> None:
 
         .kpi-value {
             color: var(--finance-text);
-            font-size: 30px;
+            font-size: 24px;
             font-weight: 800;
             line-height: 1.15;
-            margin-top: 10px;
+            margin-top: 7px;
         }
 
         .kpi-helper {
             color: var(--finance-muted);
-            font-size: 14px;
-            margin-top: 8px;
+            font-size: 12px;
+            margin-top: 6px;
         }
 
         .section-card {
-            padding: 22px;
-            margin-top: 18px;
+            padding: 14px;
+            margin-top: 12px;
         }
 
         .section-card h2 {
             color: var(--finance-text);
-            font-size: 22px;
+            font-size: 18px;
             margin: 0 0 6px;
             letter-spacing: 0;
         }
 
         .section-card p {
             color: var(--finance-muted);
-            margin: 0 0 16px;
+            margin: 0 0 10px;
         }
 
         .month-pill {
             display: inline-flex;
             align-items: center;
             border-radius: 999px;
-            background: #eff6ff;
-            color: var(--finance-accent-dark);
+            background: #ffffff;
+            color: #000000;
             font-weight: 700;
-            padding: 6px 10px;
-            margin-top: 14px;
-            font-size: 13px;
+            padding: 5px 8px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        div[data-testid="stVerticalBlock"] {
+            gap: 0.7rem;
+        }
+
+        div[data-testid="stHorizontalBlock"] {
+            gap: 0.7rem;
         }
 
         @media (max-width: 640px) {
             .block-container {
                 max-width: 100%;
-                padding: 24px 14px 28px;
+                padding: 10px 10px 18px;
             }
 
             [data-testid="stVerticalBlockBorderWrapper"] {
-                padding: 22px 16px 18px;
+                padding: 12px 10px;
             }
 
             .login-copy h1,
             .page-heading h1 {
-                font-size: 28px;
+                font-size: 22px;
             }
 
             .kpi-grid {
                 grid-template-columns: 1fr;
+                gap: 8px;
+                margin: 8px 0 12px;
             }
 
             .kpi-value {
-                font-size: 26px;
+                font-size: 21px;
+            }
+
+            .kpi-card {
+                padding: 11px 12px;
+            }
+
+            .kpi-helper {
+                display: none;
+            }
+
+            .page-heading {
+                margin-bottom: 10px;
+            }
+
+            .page-heading p {
+                font-size: 13px;
+            }
+
+            .section-card {
+                padding: 11px;
+                margin-top: 10px;
+            }
+
+            .section-card h2 {
+                font-size: 16px;
+            }
+
+            .section-card p {
+                display: none;
+            }
+
+            .month-pill {
+                font-size: 11px;
+                padding: 4px 7px;
+                margin-top: 7px;
+            }
+
+            .stButton > button,
+            .stFormSubmitButton > button,
+            .stTextInput input {
+                min-height: 34px;
+            }
+
+            [data-testid="stSidebar"] [data-testid="stRadio"] label {
+                padding: 5px 7px;
+            }
+
+            .sidebar-brand strong {
+                font-size: 16px;
+            }
+
+            .sidebar-brand span {
+                display: none;
             }
 
             .topbar {
-                justify-content: stretch;
+                display: none;
             }
 
-            .topbar > div {
-                width: 100%;
+            div[data-testid="stDataFrame"],
+            div[data-testid="stDataEditor"] {
+                max-height: 360px;
             }
         }
+
+        __LOGIN_CSS__
         </style>
         """
     css = (
         css.replace("__SIDEBAR_VISIBILITY__", sidebar_visibility)
         .replace("__BLOCK_WIDTH__", block_width)
         .replace("__BLOCK_PADDING__", block_padding)
+        .replace("__LOGIN_CSS__", build_login_css(authenticated))
     )
 
     st.markdown(
         css,
         unsafe_allow_html=True,
     )
+
+
+def build_login_css(authenticated: bool) -> str:
+    if authenticated:
+        return ""
+
+    return """
+        [data-testid="stHeader"] {
+            display: none;
+        }
+
+        [data-testid="stVerticalBlockBorderWrapper"] {
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .stTextInput input {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            color: #111827;
+        }
+
+        .stTextInput input:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.22);
+        }
+
+        .stFormSubmitButton > button {
+            background: #ffffff;
+            border-color: #ffffff;
+            color: #000000;
+        }
+
+        .stFormSubmitButton > button:hover {
+            background: #e5e7eb;
+            border-color: #e5e7eb;
+            color: #000000;
+        }
+    """

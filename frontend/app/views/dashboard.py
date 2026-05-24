@@ -183,7 +183,7 @@ def render_charts(
     if history_df.empty:
         st.info("Ainda nao ha dados suficientes para o historico mensal.")
     else:
-        st.line_chart(history_df, height=280)
+        st.line_chart(history_df, height=220)
 
 
 def build_category_chart_data(month_data: dict[str, pd.DataFrame]) -> pd.DataFrame:
@@ -250,7 +250,7 @@ def render_bar_chart_or_empty(df: pd.DataFrame, column: str, empty_message: str)
         st.info(empty_message)
         return
 
-    st.bar_chart(df[[column]], height=260)
+    st.bar_chart(df[[column]], height=210)
 
 
 def build_monthly_history(data: dict[str, pd.DataFrame]) -> pd.DataFrame:
