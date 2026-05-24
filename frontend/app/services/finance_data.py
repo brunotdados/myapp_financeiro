@@ -188,8 +188,7 @@ def load_house_bills() -> pd.DataFrame:
         csv_path=HOUSE_BILLS_PATH,
     )
     if df.empty:
-        df = pd.DataFrame(columns=HOUSE_BILLS_COLUMNS)
-        save_house_bills(df)
+        return pd.DataFrame(columns=HOUSE_BILLS_COLUMNS)
 
     for column in HOUSE_BILLS_COLUMNS:
         if column not in df.columns:
@@ -264,8 +263,7 @@ def load_income_entries() -> pd.DataFrame:
         csv_path=INCOME_ENTRIES_PATH,
     )
     if df.empty:
-        df = pd.DataFrame(columns=INCOME_COLUMNS)
-        save_income_entries(df)
+        return pd.DataFrame(columns=INCOME_COLUMNS)
 
     for column in INCOME_COLUMNS:
         if column not in df.columns:
@@ -345,8 +343,7 @@ def load_manual_bank_accounts() -> pd.DataFrame:
         csv_path=MANUAL_BANK_ACCOUNTS_PATH,
     )
     if df.empty:
-        df = pd.DataFrame(columns=MANUAL_BANK_COLUMNS)
-        save_manual_bank_accounts(df)
+        return pd.DataFrame(columns=MANUAL_BANK_COLUMNS)
 
     for column in MANUAL_BANK_COLUMNS:
         if column not in df.columns:
