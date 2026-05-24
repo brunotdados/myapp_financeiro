@@ -1,3 +1,5 @@
+from html import escape
+
 import pandas as pd
 import streamlit as st
 
@@ -183,7 +185,7 @@ def render_charts(
     if history_df.empty:
         st.info("Ainda nao ha dados suficientes para o historico mensal.")
     else:
-        st.line_chart(history_df, height=220)
+        render_monthly_history(history_df)
 
 
 def build_category_chart_data(month_data: dict[str, pd.DataFrame]) -> pd.DataFrame:
@@ -250,7 +252,85 @@ def render_bar_chart_or_empty(df: pd.DataFrame, column: str, empty_message: str)
         st.info(empty_message)
         return
 
-    st.bar_chart(df[[column]], height=210)
+    chart_df = df[[column]].copy()
+    chart_df[column] = pd.to_numeric(chart_df[column], errors="coerce").fillna(0.0)
+    chart_df = chart_df.sort_values(column, ascending=False)
+    max_value = float(chart_df[column].max()) if not chart_df.empty else 0.0
+
+    rows = []
+    for label, row in chart_df.iterrows():
+        value = float(row[column])
+        width = 0 if max_value <= 0 else max((value / max_value) * 100, 3)
+        rows.append(
+            f"""
+            <div class="simple-bar-row">
+                <div class="simple-bar-top">
+                    <span>{escape(str(label))}</span>
+                    <strong>{format_currency(value)}</strong>
+                </div>
+                <div class="simple-bar-track">
+                    <div class="simple-bar-fill" style="width: {width:.1f}%;"></div>
+                </div>
+            </div>
+            """
+        )
+
+    st.markdown(
+        f"""
+        <div class="simple-chart">
+            {''.join(rows)}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_monthly_history(history_df: pd.DataFrame) -> None:
+    history = history_df.copy()
+    history["Saldo"] = pd.to_numeric(history["Saldo"], errors="coerce").fillna(0.0)
+    max_abs_balance = float(history["Saldo"].abs().max()) if not history.empty else 0.0
+
+    rows = []
+    for numanomes, row in history.iterrows():
+        balance = float(row["Saldo"])
+        width = 0 if max_abs_balance <= 0 else max((abs(balance) / max_abs_balance) * 100, 3)
+        color = "#22c55e" if balance >= 0 else "#ef4444"
+        rows.append(
+            f"""
+            <div class="simple-bar-row">
+                <div class="simple-bar-top">
+                    <span>{escape(str(numanomes))}</span>
+                    <strong>{format_currency(balance)}</strong>
+                </div>
+                <div class="simple-bar-track">
+                    <div class="simple-bar-fill" style="width: {width:.1f}%; background: {color};"></div>
+                </div>
+            </div>
+            """
+        )
+
+    st.markdown(
+        f"""
+        <div class="simple-chart">
+            {''.join(rows)}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.dataframe(
+        history.reset_index(),
+        hide_index=True,
+        use_container_width=True,
+        column_config={
+            "NUMANOMES": st.column_config.TextColumn("NUMANOMES"),
+            "Entradas": st.column_config.NumberColumn("Entradas", format="R$ %.2f"),
+            "Contas Casa": st.column_config.NumberColumn("Contas Casa", format="R$ %.2f"),
+            "Cartoes/Bancos": st.column_config.NumberColumn("Cartoes/Bancos", format="R$ %.2f"),
+            "Dizimo": st.column_config.NumberColumn("Dizimo", format="R$ %.2f"),
+            "Saldo": st.column_config.NumberColumn("Saldo", format="R$ %.2f"),
+        },
+    )
 
 
 def build_monthly_history(data: dict[str, pd.DataFrame]) -> pd.DataFrame:

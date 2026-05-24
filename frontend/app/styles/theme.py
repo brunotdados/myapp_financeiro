@@ -302,6 +302,59 @@ def apply_theme(authenticated: bool) -> None:
             font-size: 12px;
         }
 
+        .simple-chart {
+            background: var(--finance-panel);
+            border: 1px solid var(--finance-border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+
+        .simple-bar-row {
+            margin-bottom: 10px;
+        }
+
+        .simple-bar-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .simple-bar-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--finance-text);
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .simple-bar-top span {
+            color: var(--finance-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .simple-bar-top strong {
+            color: var(--finance-text);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .simple-bar-track {
+            width: 100%;
+            height: 9px;
+            background: #1f2937;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .simple-bar-fill {
+            min-width: 3px;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 999px;
+        }
+
         div[data-testid="stVerticalBlock"] {
             gap: 0.7rem;
         }
@@ -395,6 +448,18 @@ def apply_theme(authenticated: bool) -> None:
             div[data-testid="stDataFrame"],
             div[data-testid="stDataEditor"] {
                 max-height: 360px;
+            }
+
+            .simple-chart {
+                padding: 10px;
+            }
+
+            .simple-bar-top {
+                font-size: 11px;
+            }
+
+            .simple-bar-top strong {
+                font-size: 11px;
             }
         }
 
