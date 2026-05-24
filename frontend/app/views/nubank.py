@@ -179,10 +179,7 @@ def render_month_table(
     editable_df = month_df.reset_index(names="_row_id")
     visible_columns = [
         "_row_id",
-        "data_compra",
         "descricao",
-        "valor",
-        "banco",
         "categoria",
         "subcategoria",
     ]
@@ -191,20 +188,14 @@ def render_month_table(
         editable_df[visible_columns],
         hide_index=True,
         use_container_width=True,
-        disabled=["_row_id", "data_compra", "descricao", "valor", "banco"],
+        disabled=["_row_id", "descricao"],
         column_order=[
-            "data_compra",
             "descricao",
-            "valor",
-            "banco",
             "categoria",
             "subcategoria",
         ],
         column_config={
-            "data_compra": st.column_config.TextColumn("Data"),
             "descricao": st.column_config.TextColumn("Descricao", width="large"),
-            "valor": st.column_config.NumberColumn("Valor", format="R$ %.2f"),
-            "banco": st.column_config.TextColumn("Cartao"),
             "categoria": st.column_config.SelectboxColumn(
                 "Categoria",
                 options=category_options,
