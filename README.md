@@ -34,6 +34,17 @@ copy .env.example .env
 ..\..\.venv\Scripts\streamlit run app/main.py
 ```
 
+## Deploy
+
+O projeto inclui um `Dockerfile` e um `render.yaml` para deploy do Streamlit em Render.
+
+Variaveis obrigatorias no painel da plataforma:
+
+```text
+FINANCE_APP_USER
+FINANCE_APP_PASSWORD
+```
+
 ## Estrutura
 
 ```text
