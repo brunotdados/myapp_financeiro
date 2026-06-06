@@ -4,7 +4,7 @@ import streamlit as st
 from services.finance_data import (
     add_category_pair,
     format_currency,
-    get_next_numanomes,
+    get_active_nubank_numanomes,
     load_category_catalog,
     load_nubank_data,
     save_nubank_data,
@@ -15,7 +15,7 @@ from services.nubank_email_importer import import_latest_nubank_statements
 
 def render() -> None:
     df = load_nubank_data()
-    target_numanomes = get_next_numanomes()
+    target_numanomes = get_active_nubank_numanomes(df)
 
     st.markdown(
         f"""

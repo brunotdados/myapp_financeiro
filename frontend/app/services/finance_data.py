@@ -81,6 +81,26 @@ def get_next_numanomes(reference_date: date | None = None) -> str:
     return f"{year}{month:02d}"
 
 
+def get_active_nubank_numanomes(
+    df: pd.DataFrame,
+    reference_date: date | None = None,
+) -> str:
+    next_numanomes = get_next_numanomes(reference_date)
+    if df.empty or "NUMANOMES" not in df.columns:
+        return next_numanomes
+
+    valid_numanomes = (
+        df["NUMANOMES"]
+        .dropna()
+        .astype(str)
+        .loc[lambda values: values.str.fullmatch(r"\d{6}")]
+    )
+    if valid_numanomes.empty or next_numanomes in set(valid_numanomes):
+        return next_numanomes
+
+    return valid_numanomes.max()
+
+
 def format_currency(value: float) -> str:
     formatted = f"R$ {value:,.2f}"
     return formatted.replace(",", "X").replace(".", ",").replace("X", ".")
