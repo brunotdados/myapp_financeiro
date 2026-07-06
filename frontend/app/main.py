@@ -92,7 +92,18 @@ def render_authenticated_home() -> None:
         unsafe_allow_html=True,
     )
 
-    NAV_ITEMS[st.session_state.active_page]()
+    try:
+        NAV_ITEMS[st.session_state.active_page]()
+    except Exception as exc:
+        st.error("Nao consegui carregar esta pagina.")
+        st.info(
+            "No Streamlit Cloud, abra Manage app > Settings > Secrets e confira "
+            "SUPABASE_URL, SUPABASE_KEY e as senhas de app do Gmail. Se o erro "
+            "for no Dashboard, verifique tambem se as tabelas do Supabase foram "
+            "criadas com docs/supabase_schema.sql."
+        )
+        with st.expander("Detalhes tecnicos"):
+            st.code(str(exc) or exc.__class__.__name__)
 
 
 if __name__ == "__main__":

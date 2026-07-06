@@ -49,7 +49,11 @@ def is_supabase_configured() -> bool:
 
 def load_supabase_table(table_name: str, columns: list[str]) -> pd.DataFrame:
     client = get_supabase_client()
-    response = client.table(table_name).select("*").execute()
+    try:
+        response = client.table(table_name).select("*").execute()
+    except Exception as exc:
+        raise_supabase_error("carregar", table_name, exc)
+
     rows = response.data or []
     if not rows:
         return pd.DataFrame(columns=columns)
@@ -68,16 +72,19 @@ def replace_supabase_table(
 ) -> None:
     client = get_supabase_client()
 
-    if delete_column == "id":
-        client.table(table_name).delete().neq("id", -1).execute()
-    else:
-        client.table(table_name).delete().neq(delete_column, "__never__").execute()
+    try:
+        if delete_column == "id":
+            client.table(table_name).delete().neq("id", -1).execute()
+        else:
+            client.table(table_name).delete().neq(delete_column, "__never__").execute()
 
-    if df.empty:
-        return
+        if df.empty:
+            return
 
-    records = dataframe_to_records(df)
-    client.table(table_name).insert(records).execute()
+        records = dataframe_to_records(df)
+        client.table(table_name).insert(records).execute()
+    except Exception as exc:
+        raise_supabase_error("salvar", table_name, exc)
 
 
 @st.cache_resource
@@ -100,14 +107,22 @@ def get_supabase_client() -> Any:
 def get_secret(name: str) -> str | None:
     value = os.getenv(name)
     if value:
-        return value
+        return value.strip()
 
     try:
         secret_value = st.secrets.get(name)
     except Exception:
         return None
 
-    return str(secret_value) if secret_value else None
+    return str(secret_value).strip() if secret_value else None
+
+
+def raise_supabase_error(action: str, table_name: str, exc: Exception) -> None:
+    raise RuntimeError(
+        f"Nao foi possivel {action} a tabela '{table_name}' no Supabase. "
+        "Confira SUPABASE_URL, SUPABASE_KEY, se as tabelas foram criadas e se "
+        f"o projeto Supabase esta ativo. Tipo do erro: {exc.__class__.__name__}."
+    ) from exc
 
 
 def dataframe_to_records(df: pd.DataFrame) -> list[dict[str, Any]]:
@@ -123,4 +138,3 @@ def normalize_record(record: dict[str, Any]) -> dict[str, Any]:
             value = value.item()
         normalized[key] = value
     return normalized
-
